@@ -2,7 +2,7 @@
 
 EPA Emissions MCP — wraps EPA Envirofacts REST API (free, no auth)
 
-Part of [Pipeworx](https://pipeworx.io) — an MCP gateway connecting AI agents to 1394+ live data sources.
+Part of [Pipeworx](https://pipeworx.io) — an MCP gateway connecting AI agents to 1476+ live data sources.
 
 ## Tools
 
@@ -10,7 +10,7 @@ Part of [Pipeworx](https://pipeworx.io) — an MCP gateway connecting AI agents 
 |------|-------------|
 | `ghg_facility_emissions` | The biggest greenhouse-gas-emitting facilities in a US state (EPA GHGRP), ranked by total CO2-equivalent emissions. Returns each facility's name, location, industry sector(s), and total metric tons CO2e. State-scoped (pass a state). Data lags ~1.5 years — latest full year is auto-selected (currently 2023) unless a `year` is given. |
 | `ghg_emissions_by_sector` | Total greenhouse-gas emissions by INDUSTRY SECTOR within a US state (EPA GHGRP) — answers 'which sectors emit the most in <state>'. Sectors: Power Plants, Refineries, Chemicals, Metals, Minerals, Pulp and Paper, Petroleum and Natural Gas Systems, Waste, etc. Returns each sector's total metric tons CO2e and facility count, ranked. State-scoped (pass a state); data lags ~1.5y so the latest full year (~2023) is auto-selected unless `year` is given. |
-| `tri_facility_releases` | Search toxic chemical release facilities by state. Returns facility location, type, and chemicals released with quantities in pounds. |
+| `tri_facility_releases` | Search EPA TRI toxic chemical release facilities by state, and optionally by COUNTY — "what toxic releases are reported in Harris County, Texas" is the shape these questions usually take. Returns facility location, county, type, and chemicals released with quantities in pounds. |
 | `tri_chemical_releases` | Track toxic chemical releases by chemical name and state. Returns quantities released to air, water, and land broken down by year. |
 | `tri_trends` | Analyze toxic release trends over time by state or chemical. Returns historical release data across years to identify patterns and changes. |
 
@@ -28,7 +28,25 @@ Add to your MCP client (Claude Desktop, Cursor, Windsurf, etc.):
 }
 ```
 
-Or connect to the full Pipeworx gateway for access to all 1394+ data sources:
+### What this endpoint actually serves
+
+`tools/list` at `https://gateway.pipeworx.io/epa-emissions/mcp` returns the tools in the table
+above **plus the shared Pipeworx meta-tools** — `ask_pipeworx`,
+`discover_tools`, `search_within`, `remember`/`recall` and the rest of the
+gateway-wide set. So the tool count you see is larger than this table: a
+single-pack endpoint currently lists roughly 30 shared tools alongside the
+pack's own. The connection's `initialize` response states its exact scope, and
+is the authoritative answer for a given day.
+
+This is deliberate, not multiplexing by accident. The meta-tools are what let a
+scoped connection answer a question this pack does not cover — via
+`ask_pipeworx`, which routes across the whole catalog — without you adding a
+second MCP server. There is currently no way to mount a pack endpoint without
+them; if the extra schemas cost you more context than the routing is worth,
+connect to the full gateway once rather than to several pack endpoints.
+
+Or connect to the full Pipeworx gateway to get every pack's tools listed
+directly, instead of just this one's:
 
 ```json
 {
@@ -40,9 +58,14 @@ Or connect to the full Pipeworx gateway for access to all 1394+ data sources:
 }
 ```
 
+Both URLs reach the same gateway and the same 1476+ data sources. The
+only difference is which pack's tools are listed **directly**; `ask_pipeworx`
+reaches all of them from either one.
+
 ## Using with ask_pipeworx
 
-Instead of calling tools directly, you can ask questions in plain English:
+Instead of calling tools directly, you can ask questions in plain English —
+this works on the pack endpoint above as well as on the full gateway:
 
 ```
 ask_pipeworx({ question: "your question about Epa Emissions data" })
