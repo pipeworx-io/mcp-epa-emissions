@@ -1,6 +1,6 @@
 {
   "name": "@pipeworx/mcp-epa-emissions",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "EPA Emissions MCP — wraps EPA Envirofacts REST API (free, no auth)",
   "type": "module",
   "main": "src/index.ts",
@@ -26,7 +26,7 @@
     "@cloudflare/workers-types": "^4.20260405.1"
   },
   "pipeworx": {
-    "sourceHash": "v1-203cbfe5061fd2a4cbf2138d63b67732a88ada7c7c5a703832586ac31b48ad66",
-    "sourceCommit": "4fa4c64448be06f4a2ee4cee19f756f3558a7cad"
+    "sourceHash": "v1-32a05abe58853b31b0b81691fc2f087cc99bcb6e5a4f7e910f7459f167e10a73",
+    "sourceCommit": "712a5e0171ea24483214329d0cd7efdfd9b80352"
   }
 }
