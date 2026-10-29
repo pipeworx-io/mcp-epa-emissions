@@ -1,0 +1,131 @@
+[
+  {
+    "name": "ghg_facility_emissions",
+    "description": "The biggest greenhouse-gas-emitting facilities in a US state (EPA GHGRP), ranked by total CO2-equivalent emissions. Returns each facility's name, location, industry sector(s), and total metric tons CO2e. State-scoped (pass a state). Data lags ~1.5 years — latest full year is auto-selected (currently 2023) unless a `year` is given.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "state": {
+          "type": "string",
+          "description": "US state — 2-letter code (\"TX\", \"CA\") or full name (\"Texas\"). Required (this is state-scoped, not national)."
+        },
+        "facility_name": {
+          "type": "string",
+          "description": "Optional — filter to facilities whose name contains this text."
+        },
+        "year": {
+          "type": "number",
+          "description": "Reporting year (default: latest available, ~2023)."
+        },
+        "limit": {
+          "type": "number",
+          "description": "Max facilities to return, ranked by emissions (default 20, max 200)."
+        }
+      },
+      "required": [
+        "state"
+      ]
+    }
+  },
+  {
+    "name": "ghg_emissions_by_sector",
+    "description": "Total greenhouse-gas emissions by INDUSTRY SECTOR within a US state (EPA GHGRP) — answers 'which sectors emit the most in <state>'. Sectors: Power Plants, Refineries, Chemicals, Metals, Minerals, Pulp and Paper, Petroleum and Natural Gas Systems, Waste, etc. Returns each sector's total metric tons CO2e and facility count, ranked. State-scoped (pass a state); data lags ~1.5y so the latest full year (~2023) is auto-selected unless `year` is given.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "state": {
+          "type": "string",
+          "description": "US state — 2-letter code (\"TX\") or full name (\"Texas\"). Required (state-scoped, not national)."
+        },
+        "sector": {
+          "type": "string",
+          "description": "Optional — filter to one sector by name (e.g. \"Power Plants\", \"Refineries\", \"Chemicals\")."
+        },
+        "year": {
+          "type": "number",
+          "description": "Reporting year (default: latest available, ~2023)."
+        }
+      },
+      "required": [
+        "state"
+      ]
+    }
+  },
+  {
+    "name": "tri_facility_releases",
+    "description": "Search EPA TRI toxic chemical release facilities by state, and optionally by COUNTY — \"what toxic releases are reported in Harris County, Texas\" is the shape these questions usually take. Returns facility location, county, type, and chemicals released with quantities in pounds.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "state": {
+          "type": "string",
+          "description": "Two-letter state abbreviation (e.g., \"TX\", \"CA\")."
+        },
+        "county": {
+          "type": "string",
+          "description": "County name WITHOUT the word \"County\" — \"Harris\", not \"Harris County\". Matched exactly, case-insensitive."
+        },
+        "facility_name": {
+          "type": "string",
+          "description": "Facility name to search for (partial match)."
+        },
+        "limit": {
+          "type": "number",
+          "description": "Max results (default 20, max 100)."
+        }
+      },
+      "required": [
+        "state"
+      ]
+    }
+  },
+  {
+    "name": "tri_chemical_releases",
+    "description": "Track toxic chemical releases by chemical name and state. Returns quantities released to air, water, and land broken down by year.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "chemical": {
+          "type": "string",
+          "description": "Chemical name (e.g., \"LEAD\", \"MERCURY\", \"BENZENE\", \"TOLUENE\")."
+        },
+        "state": {
+          "type": "string",
+          "description": "Two-letter state abbreviation to filter by (optional)."
+        },
+        "limit": {
+          "type": "number",
+          "description": "Max results (default 20, max 100)."
+        }
+      },
+      "required": [
+        "chemical"
+      ]
+    }
+  },
+  {
+    "name": "tri_trends",
+    "description": "Analyze toxic release trends over time by state or chemical. Returns historical release data across years to identify patterns and changes.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "state": {
+          "type": "string",
+          "description": "Two-letter state abbreviation (e.g., \"OH\")."
+        },
+        "chemical": {
+          "type": "string",
+          "description": "Chemical name (e.g., \"LEAD\")."
+        },
+        "start_year": {
+          "type": "number",
+          "description": "Start year for the trend range (default: 5 years ago)."
+        },
+        "end_year": {
+          "type": "number",
+          "description": "End year for the trend range (default: most recent available)."
+        }
+      }
+    }
+  }
+]
